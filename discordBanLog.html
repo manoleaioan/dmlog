@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function imageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    }
+    
+    async function generateEmbed(by, user, time, reason, proof, id, modId) {
+        var proofs = proof?.split("<*");
+        var convProofs = ""
+
+        proofs?.forEach(function (m) {
+            var type = m.substr(m.length - 3, 3)
+            if (m.length > 2) {
+                convProofs += m.includes("bit.ly") ? "[👁️](https://" + m + ")  " : "\n" + m + "\n"
+            }
+        })
+
+        const staffImage = await imageExists("http://avatars.atelier801.com/" + modId % 10000 + "/" + modId + ".jpg");
+
+        // console.log(staffImage)
+
+        const embed = {
+            title: user,
+            url: "https://atelier801.com/profile?pr=" + user,
+            color: 16711680,
+            timestamp: new Date(),
+            footer: {
+                text: by
+            },
+            // author: {
+            //     name: time + " banned"
+            // },
+            thumbnail: {
+                url: "http://avatars.atelier801.com/" + id % 10000 + "/" + id + ".jpg"
+            },
+            fields: [
+                {
+                    name: "Reason",
+                    value: reason,
+                    inline: true
+                },
+                {
+                    name: "Duration",
+                    value: time,
+                    inline: true
+                },
+                {
+                    name: "Proof",
+                    value: convProofs,
+                    inline: true
+                }
+            ]
+        };
+
+        if (staffImage) {
+            embed.footer = {
+                icon_url: "http://avatars.atelier801.com/" + modId % 10000 + "/" + modId + ".jpg",
+                text: by
+            }
+        }
+
+        return embed;
+    }
+
+    window.onload = async function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const params = {};
+
+        urlParams.forEach((value, key) => {
+            params[key] = value;
+        });
+
+
+        const url = `https://discord.com/api/webhooks/1276511635774771230/${params.key}`;
+
+        const body = {
+            content: 'Hello from your website!'
+        };
+
+        const embed = await generateEmbed(params.mod, params.p, params.t, params.r, params.bp, params.id, params.mId);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ embeds: [embed] }) // Send the embed in the payload
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text().then(text => text ? JSON.parse(text) : {});
+            })
+            .then(data => {
+                console.log('Webhook sent successfully:', data);
+                document.getElementById('status').innerText = 'Ok';
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('status').innerText = 'Error';
+            });
+    };
+</script>
+
+<body>
+    <p id="status">Sending...</p>
+</body>
+
+</html>
