@@ -6,22 +6,7 @@
     <title>Document</title>
 </head>
 <script>
-    function imageExists(url) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-                console.log(`Image loaded successfully: ${url}`);
-                resolve(url);
-            };
-            img.onerror = () => {
-                console.log(`Image failed to load: ${url}`);
-                resolve(false);
-            };
-            img.src = url;
-        });
-    }
-
-    async function generateEmbed(by, user, time, reason, proof, id, modId) {
+    function generateEmbed(by, user, time, reason, proof, id, modId) {
         var proofs = proof?.split("<*");
         var convProofs = "";
 
@@ -40,7 +25,8 @@
             color: 16711680,
             timestamp: new Date(),
             footer: {
-                text: by
+                text: by,
+                icon_url: "http://avatars.atelier801.com/" + modId % 10000 + "/" + modId + ".jpg"
             },
             thumbnail: {
                 url: "http://avatars.atelier801.com/" + id % 10000 + "/" + id + ".jpg"
@@ -63,14 +49,6 @@
                 }
             ]
         };
-
-        if (staffImage) {
-            console.log(staffImage)
-            embed.footer = {
-                icon_url: staffImage,
-                text: by
-            };
-        }
 
         return embed;
     }
