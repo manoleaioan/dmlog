@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,14 +40,17 @@
                     name: "Duration",
                     value: time,
                     inline: true
-                },
-                {
-                    name: "Report",
-                    value: convProofs,
-                    inline: true
                 }
             ]
         };
+
+        if (convProofs != "") {
+            embed.fields.push({
+                name: "Report",
+                value: convProofs,
+                inline: true
+            })
+        }
 
         return embed;
     }
@@ -90,7 +94,9 @@
             });
     };
 </script>
+
 <body>
     <p id="status">Sending...</p>
 </body>
+
 </html>
