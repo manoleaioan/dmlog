@@ -85,7 +85,7 @@
                 console.log('Webhook sent successfully:', data);
                 document.getElementById('status').innerText = 'Ok';
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                // window.history.replaceState({}, document.title, newUrl);
+                window.history.replaceState({}, document.title, newUrl);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
