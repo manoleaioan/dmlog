@@ -8,13 +8,12 @@
 </head>
 <script>
     function generateEmbed(by, user, time, reason, proof, id, modId) {
-        var proofs = proof?.split("<*");
+        var proofs = proof?.split(/<[^>]*>/);
         var convProofs = "";
 
         proofs?.forEach(function (m) {
-            var type = m.substr(m.length - 3, 3);
             if (m.length > 2) {
-                convProofs += m.includes("bit.ly") ? "[👁️](https://" + m + ")  " : "\n" + m + "\n";
+                convProofs += m.includes("bit.ly") ? "[👁️](https://" + m + ")  " : "\n" + m;
             }
         });
 
@@ -86,7 +85,7 @@
                 console.log('Webhook sent successfully:', data);
                 document.getElementById('status').innerText = 'Ok';
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.replaceState({}, document.title, newUrl);
+                // window.history.replaceState({}, document.title, newUrl);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
